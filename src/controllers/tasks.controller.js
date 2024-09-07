@@ -6,7 +6,7 @@ const getAllTasks = async (req, res, next) => {
         console.log(allTasks)
         res.json(allTasks.rows)
     } catch(error){
-        rnext(error);
+        next(error);
     }
 
 //   res.send("retriven a list of tasks");
