@@ -27,7 +27,7 @@ const getSingleTask = async (req, res, next) => {
     
         res.json(task.rows)
     }catch(error){
-        rnext(error);
+        next(error);
     }
 
 };
