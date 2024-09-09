@@ -8,7 +8,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate , useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function TaskForm() {
   const [task, setTask] = useState({
@@ -17,24 +17,40 @@ export default function TaskForm() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
+    if (editing) {
+      // const response = await fetch(`http://localhost:4000/tasks/${params.id}`,{
+      await fetch(`http://localhost:4000/tasks/${params.id}`,{
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task)
+      });
+      // const data = response.json()
+      // console.log(data);
+      // console.log("update");
+    } else {
+      await fetch("http://localhost:4000/tasks", {
+        method: "POST",
+        body: JSON.stringify(task), //convierte objecto a string
+        // necesario para que sepa que es un objecto json, sin headers los campos seran null
+        headers: { "Content-Type": "application/json" },
+      });
+      // const data = await res.json(); //convierte respuesta a JSON
+      // console.log(data);
+    }
+
     // console.log(task)
-    await fetch("http://localhost:4000/tasks", {
-      method: "POST",
-      body: JSON.stringify(task), //convierte objecto a string
-      // necesario para que sepa que es un objecto json, sin headers los campos seran null
-      headers: { "Content-Type": "application/json" },
-    });
-    // const data = await res.json(); //convierte respuesta a JSON
-    // console.log(data);
+
     setLoading(false);
     navigate("/");
   };
@@ -44,20 +60,23 @@ export default function TaskForm() {
     // console.log(task)
   };
 
-  const loadTask = async (id) =>{
-    const res = await fetch(`http://localhost:4000/tasks/${id}`)
-    const data = await res.json()
+  const loadTask = async (id) => {
+    const res = await fetch(`http://localhost:4000/tasks/${id}`);
+    const data = await res.json();
     // console.log(data)
-    setTask({title:data.title, description: data.description})
+    // console.log("data title", data.title);
+    // console.log("data desc" ,data.description);
+    setTask({ title: data.title, description: data.description });
+    setEditing(true);
   };
 
   // hace validacion apenas y termine el componente
   useEffect(() => {
-    if (params.id){
-      loadTask(params.id)
+    if (params.id) {
+      loadTask(params.id);
       // console.log('fetch task')
     }
-  }, [params.id])
+  }, [params.id]);
 
   return (
     <Grid2
@@ -76,7 +95,7 @@ export default function TaskForm() {
           }}
         >
           <Typography variant="5" textAlign="center" color="green">
-            Create task
+            {editing ? "Edit task" : "Add task"}
           </Typography>
           <CardContent>
             <form onSubmit={handleSubmit}>
@@ -114,7 +133,7 @@ export default function TaskForm() {
                 {loading ? (
                   <CircularProgress color="inherit" size={24} />
                 ) : (
-                  "Create"
+                  "Save"
                 )}
               </Button>
             </form>
