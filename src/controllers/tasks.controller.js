@@ -25,7 +25,7 @@ const getSingleTask = async (req, res, next) => {
             mesage: "Task not found"
         })
     
-        res.json(task.rows)
+        res.json(task.rows[0])
     }catch(error){
         next(error);
     }
