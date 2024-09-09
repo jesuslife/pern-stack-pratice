@@ -7,7 +7,7 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function TaskForm() {
@@ -26,13 +26,13 @@ export default function TaskForm() {
     setLoading(true);
 
     // console.log(task)
-    const res = await fetch("http://localhost:4000/tasks", {
+    await fetch("http://localhost:4000/tasks", {
       method: "POST",
       body: JSON.stringify(task), //convierte objecto a string
       // necesario para que sepa que es un objecto json, sin headers los campos seran null
       headers: { "Content-Type": "application/json" },
     });
-    const data = await res.json(); //convierte respuesta a JSON
+    // const data = await res.json(); //convierte respuesta a JSON
     // console.log(data);
     setLoading(false);
     navigate("/");
@@ -40,6 +40,7 @@ export default function TaskForm() {
 
   const handleChange = (e) => {
     setTask({ ...task, [e.target.name]: e.target.value });
+    // console.log(task)
   };
 
   return (
@@ -58,7 +59,7 @@ export default function TaskForm() {
             padding: "1rem",
           }}
         >
-          <Typography variant="5" textAlign="center" color="white">
+          <Typography variant="5" textAlign="center" color="green">
             Create task
           </Typography>
           <CardContent>
